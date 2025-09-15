@@ -1,12 +1,4 @@
-# THIS IS THE CORRECT VERSION FOR THE INTEGRATED INSTALLER
-{ disko, ... }:
-
 {
-  imports = [ 
-    disko.nixosModules.disko
-    disko.nixosModules.zfs
-  ];
-
   disko.devices = {
     disk.vda = {
       device = "/dev/vda";
@@ -14,15 +6,7 @@
       content = {
         type = "gpt";
         partitions = {
-          ESP = {
-            size = "1G";
-            type = "EF00";
-            content = {
-              type = "filesystem";
-              format = "vfat";
-              mountpoint = "/boot";
-            };
-          };
+          ESP = { size = "1G"; type = "EF00"; content = { type = "filesystem"; format = "vfat"; mountpoint = "/boot"; }; };
           zfs = {
             size = "100%";
             content = {
@@ -35,11 +19,7 @@
                 "nix" = { type = "zfs_fs"; mountpoint = "/nix"; postCreateHook = "zfs set atime=off rpool/nix"; };
                 "home" = { type = "zfs_fs"; mountpoint = "/home"; };
               };
-              rootFsOptions = {
-                compression = "lz4";
-                xattr = "sa";
-                acltype = "posixacl";
-              };
+              rootFsOptions = { compression = "lz4"; xattr = "sa"; acltype = "posixacl"; };
             };
           };
         };

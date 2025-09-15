@@ -1,10 +1,16 @@
-# /hosts/ChisakaAiri/default.nix
-{ config, pkgs, ... }:
+{ config, pkgs, disko, ... }:
 
 {
   imports = [
-    # Import the base configuration common to all servers
+    # Base config for users/ssh
     ../../modules/base.nix
+
+    # Disko modules for partitioning
+    disko.nixosModules.disko
+    disko.nixosModules.zfs
+
+    # The actual disk layout
+    ./disko-config.nix
   ];
 
   # --- System Configuration ---
@@ -17,14 +23,11 @@
   networking.useDHCP = true;
   
   # --- ZFS Support ---
-  # These settings are required for a ZFS root filesystem
   boot.supportedFilesystems = [ "zfs" ];
   services.zfs.autoScrub.enable = true;
-  # A unique host ID is required for ZFS. This can be any 8-digit hex number.
   networking.hostId = "c51a9a81";
 
-
-  # --- Docker & Grist Configuration (Unchanged) ---
+  # --- Docker & Grist Configuration ---
   virtualisation.docker.enable = true;
   virtualisation.oci-containers.containers.grist = {
     image = "gristlabs/grist:latest";

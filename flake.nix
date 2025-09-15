@@ -14,7 +14,6 @@
         specialArgs = { inherit disko; }; # Make disko available to our modules
         modules = [
           # And we point to the new directory
-          ./hosts/ChisakaAiri/disko-config.nix
           ./hosts/ChisakaAiri/default.nix
         ];
       };
