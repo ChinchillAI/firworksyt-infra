@@ -7,7 +7,6 @@
 
     # Disko modules for partitioning
     disko.nixosModules.disko
-    disko.nixosModules.zfs
 
     # The actual disk layout
     ./disko-config.nix
