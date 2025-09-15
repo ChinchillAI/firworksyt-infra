@@ -11,9 +11,8 @@
     nixosConfigurations = {
       "ChisakaAiri" = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit disko; }; # Make disko available to our modules
+        specialArgs = { inherit disko; };
         modules = [
-          # And we point to the new directory
           ./hosts/ChisakaAiri/default.nix
         ];
       };
