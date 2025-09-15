@@ -1,0 +1,19 @@
+# Nix build artifacts and symlinks
+result
+result-*
+
+# Editor-specific files and directories
+*.swp
+*~
+.vscode/
+
+# OS-specific metadata files
+.DS_Store
+Thumbs.db
+
+# A safety net for common unencrypted secret file names.
+# Note: You should be using sops-nix for secrets, which encrypts them.
+# This prevents accidentally committing the plaintext version.
+secrets.yaml
+secrets.json
+*.env
