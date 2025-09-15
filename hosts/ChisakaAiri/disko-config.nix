@@ -1,7 +1,9 @@
-# THIS IS THE NEW, CORRECT VERSION
+# THIS IS THE CORRECT VERSION FOR THE INTEGRATED INSTALLER
+{ disko, ... }:
+
 {
-  # The 'imports' line is not needed for the CLI tool and is handled
-  # by the main flake evaluation, so we can remove it.
+  imports = [ disko.nixosModules.disko ];
+
   disko.devices = {
     disk.vda = {
       device = "/dev/vda";
