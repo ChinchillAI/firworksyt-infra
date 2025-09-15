@@ -2,7 +2,10 @@
 { disko, ... }:
 
 {
-  imports = [ disko.nixosModules.disko ];
+  imports = [ 
+    disko.nixosModules.disko
+    disko.nixosModules.zfs
+  ];
 
   disko.devices = {
     disk.vda = {
