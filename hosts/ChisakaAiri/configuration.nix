@@ -1,42 +1,64 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   imports = [
     ./disko.nix
   ];
 
-  networking.hostName = "ChisakaAiri";
+  networking = {
+    hostName = "ChisakaAiri";
+    hostId = "59fc4923";
+    firewall.allowedTCPPorts = [
+      8484
+    ];
+  };
 
-  # ZFS basics
-  boot.supportedFilesystems = [ "zfs" ];
   services.zfs = {
     autoScrub.enable = true;
     autoScrub.pools = [ "rpool" ];
     trim.enable = true;
   };
 
-  # Generate an 8-hex hostId once and paste it here (e.g. `openssl rand -hex 4`)
-  networking.hostId = "REPLACE_ME_8_HEX";
-
-  # Bootloader & EFI
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    kernelPackages = pkgs.linuxKernel.packages.linux_6_12;
+    supportedFilesystems = [ "zfs" ];
+    loader.grub = {
+      enable = true;
+      device = "/dev/sda";
+      zfsSupport = true;
+      efiSupport = true;
+      efiInstallAsRemovable = true;
+    };
+    loader.efi = {
+      canTouchEfiVariables = false;
+      efiSysMountPoint = "/boot";
+    };
+    zfs.devNodes = lib.mkForce "/dev";
+  };
 
   # Time & firewall
   time.timeZone = "America/Chicago";
-  networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 22 80 443 8484 ];
 
   # Users
-  users.mutableUsers = false;
   users.users.firworks = {
     isNormalUser = true;
     description = "firworks";
-    extraGroups = [ "wheel" "docker" ];
+    createHome = true;
+    home = "/home/firworks";
+    extraGroups = [
+      "wheel"
+      "docker"
+    ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDh73Zy1ZaxjjLEIS61b4PSqBmQjgNSk0RGV4nwTeHm0 firworks@nixpad"
     ];
   };
+
   security.sudo.wheelNeedsPassword = false;
 
   # SSH hardening
@@ -71,6 +93,12 @@
         };
       };
     };
+    # stuff for testing in local VMs
+    vmVariantWithDisko = {
+      users.users.firworks.initialPassword = "testing";
+      virtualisation.fileSystems."/persist".neededForBoot = true;
+      virtualisation.fileSystems."/home".neededForBoot = true;
+    };
   };
 
   # Optional: simple HTTPS front-end later (uncomment & point DNS)
@@ -83,7 +111,11 @@
   # networking.firewall.allowedTCPPorts = [ 22 80 443 ];
 
   environment.systemPackages = with pkgs; [
-    vim git curl htop jq
+    vim
+    git
+    curl
+    htop
+    jq
     smartmontools
     docker-compose
     zfs

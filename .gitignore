@@ -1,6 +1,7 @@
 # Nix build artifacts and symlinks
 result
 result-*
+*.fd
 
 # Editor-specific files and directories
 *.swp

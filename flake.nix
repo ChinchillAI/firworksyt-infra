@@ -6,10 +6,17 @@
     disko.url = "github:nix-community/disko";
   };
 
-  outputs = { self, nixpkgs, disko, ... }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      disko,
+      ...
+    }:
     let
       system = "x86_64-linux";
-    in {
+    in
+    {
       nixosConfigurations = {
         ChisakaAiri = nixpkgs.lib.nixosSystem {
           inherit system;
@@ -17,7 +24,7 @@
             disko.nixosModules.disko
             ./hosts/ChisakaAiri/configuration.nix
             # hardware-configuration.nix will be added during install:
-            ./hosts/ChisakaAiri/hardware-configuration.nix
+            # ./hosts/ChisakaAiri/hardware-configuration.nix
           ];
         };
       };
